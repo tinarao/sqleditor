@@ -3,25 +3,23 @@
 	import { SvelteFlow, Background, Controls } from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
+	import TableNode from '$lib/components/table-node.svelte';
 
 	const nodes = writable([
 		{
-			id: '1', // required and needs to be a string
-			position: { x: 0, y: 0 }, // required
-			data: { label: 'hey' } // required
-		},
-		{
-			id: '2',
-			position: { x: 100, y: 100 },
-			data: { label: 'world' }
+			id: 'node-1',
+			type: 'table',
+			position: { x: 0, y: 0 },
+			data: { color: writable('#ff4000') }
 		}
 	]);
-	const edges = writable([]);
+
+	let edges = writable([]);
 </script>
 
 <main class="h-full">
-	<header class="m-4 rounded-md bg-indigo-200 p-4">penis</header>
-	<SvelteFlow {nodes} {edges}>
+	<header class="m-4 rounded-md bg-neutral-100 p-4">penis</header>
+	<SvelteFlow nodeTypes={{ table: TableNode }} fitView {nodes} {edges}>
 		<Background />
 		<Controls />
 	</SvelteFlow>
