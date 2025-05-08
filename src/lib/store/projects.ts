@@ -21,8 +21,4 @@ export const projectsStore = {
             return ps;
         })
     }
-
-    // getAll(): Project[] {
-    //     let projects = 
-    // }
 }

@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { projectsStore } from '$lib/store/projects';
-	import type { Project } from '$lib/types';
 	import { Button } from 'flowbite-svelte';
 	import { PlusOutline } from 'flowbite-svelte-icons';
-	import { nanoid } from 'nanoid';
 	import { projectFabric } from '$lib/fabrics';
+	import { goto } from '$app/navigation';
 
 	let { store } = projectsStore;
 
 	function handleCreateNew() {
 		const newProject = projectFabric('Без названия');
 		projectsStore.append(newProject);
+
+		goto('/app/' + newProject.uuid);
 	}
 </script>
 
@@ -21,8 +22,8 @@
 		Добавить новый <PlusOutline />
 	</Button>
 	{#each $store as project}
-		<div>
+		<Button href={'/app/' + project.uuid}>
 			{project.name}
-		</div>
+		</Button>
 	{/each}
 </div>
