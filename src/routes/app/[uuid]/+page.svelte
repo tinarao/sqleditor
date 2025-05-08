@@ -19,6 +19,17 @@
 	let nodes = writable<TableNodeType[]>([]);
 	let edges = writable([]);
 	let nodeTypes: NodeTypes = { table: TableNode as any };
+	let isEditing = $state(false);
+	const handleSaveProject = () => {
+		projectsStore.store.update((projects) => {
+			const index = projects.findIndex((p) => p.uuid === project?.uuid);
+			if (index !== -1) {
+				projects[index].tables = $nodes;
+				projects[index].name = project!.name;
+			}
+			return projects;
+		});
+	};
 
 	onMount(() => {
 		project = projectsStore.getByUuid(data.uuid);
@@ -33,10 +44,33 @@
 {#if project}
 	<main class="flex min-h-screen flex-col py-4">
 		<header class="mx-4 mb-4 flex items-center justify-between rounded-lg bg-neutral-100 p-4">
-			<h1>{project.name}</h1>
+			{#if isEditing}
+				<input
+					type="text"
+					bind:value={project.name}
+					onblur={() => {
+						isEditing = false;
+						handleSaveProject();
+					}}
+					onkeydown={(e) => {
+						if (e.key === 'Enter') {
+							isEditing = false;
+							handleSaveProject();
+						}
+					}}
+					class="bg-transparent text-2xl font-bold outline-none"
+				/>
+			{:else}
+				<button
+					onclick={() => (isEditing = true)}
+					class="cursor-pointer text-2xl font-bold text-start"
+				>
+					{project.name}
+				</button>
+			{/if}
 			<div class="flex items-center gap-x-4">
 				<span>Всего таблиц: {$nodes.length}</span>
-				<Button class="aspect-square size-8 transition" size="xs">
+				<Button onclick={handleSaveProject} class="aspect-square size-8 transition" size="xs">
 					<FloppyDiskAltOutline />
 				</Button>
 			</div>
