@@ -88,7 +88,7 @@
 	});
 </script>
 
-<aside class="flex flex-col rounded-lg bg-neutral-100 p-4">
+<aside class="flex flex-col rounded-lg bg-neutral-50 p-4">
 	<div>
 		<Button onclick={handleAddTableNode} class="w-full space-x-2 transition" color="light">
 			<span> Добавить таблицу </span>
