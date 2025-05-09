@@ -11,6 +11,7 @@
 	import { onMount } from 'svelte';
 	import { currentProjectStore, currentNodesStore } from '$lib/store/currentProject';
 	import { page } from '$app/stores';
+	import ThemeToggle from '$lib/components/theme-toggle.svelte';
 
 	let { children, data } = $props();
 
@@ -36,13 +37,16 @@
 			$currentProjectStore &&
 			JSON.stringify($currentProjectStore.tables) !== JSON.stringify($currentNodesStore)
 		) {
-			$currentProjectStore.tables = structuredClone($currentNodesStore);
+			$currentProjectStore.tables = $currentNodesStore.map((node) => ({
+				...node,
+				data: { ...node.data }
+			}));
 		}
 	});
 </script>
 
-<main class="flex min-h-screen flex-col py-4">
-	<header class="mx-4 mb-4 flex items-center justify-between rounded-lg bg-neutral-50 p-4">
+<main class="bg-primary text-primary flex min-h-screen flex-col py-4">
+	<header class="bg-secondary mx-4 mb-4 flex items-center justify-between rounded-lg p-4">
 		{#if isEditing && $currentProjectStore}
 			<div class="flex items-center gap-x-2">
 				<Input
@@ -76,21 +80,21 @@
 				{$currentProjectStore?.name}
 			</button>
 		{/if}
-		<div class="flex items-center gap-x-4">
+		<div class="flex items-center gap-x-2">
+			<ThemeToggle />
 			<Button
 				onclick={handleSaveProject}
-				class="h-12 gap-x-2 border-neutral-300 text-neutral-900 transition"
+				class="size-12 gap-x-2 border-neutral-300 text-neutral-900 transition"
 				outline
 				size="sm"
 			>
-				<Kbd>Ctrl+S</Kbd>
 				<FloppyDiskAltOutline />
 			</Button>
 			{#if $page.url.pathname.endsWith('/settings')}
 				<Button
 					href={'/app/' + data.uuid}
 					size="sm"
-					class="h-12 w-12 border-neutral-300 text-neutral-900 transition"
+					class="bg-primary size-12 text-neutral-900 transition"
 					outline
 				>
 					<ArrowLeftOutline />

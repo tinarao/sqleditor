@@ -13,5 +13,5 @@
 </script>
 
 <div>
-	<Button onclick={handleDeleteProject} color="red" size="lg">Удалить проект</Button>
+	<Button onclick={handleDeleteProject} size="xl">Удалить проект</Button>
 </div>

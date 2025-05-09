@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Button, cn, Dropdown, DropdownItem, Input } from 'flowbite-svelte';
+	import { Button,  Dropdown, DropdownItem, Input } from 'flowbite-svelte';
 	import { DotsHorizontalOutline, PlusOutline } from 'flowbite-svelte-icons';
 	import { nanoid } from 'nanoid';
-	import { selectedNodeId } from '$lib/store/selectedNode';
+	import { selectedNodeId, setSelectedNodeId } from '$lib/store/selectedNode';
 	import type { Writable } from 'svelte/store';
 	import type { TableNodeData, TableNodeType } from '$lib/types';
 	import TableFieldsTable from './table-fields-table.svelte';
@@ -29,10 +29,7 @@
 			}
 		};
 
-		nodes.update((n) => {
-			n.push(tableNode);
-			return n;
-		});
+		nodes.update((n) => [...n, tableNode]);
 	}
 
 	function handleAddRow() {
@@ -44,10 +41,21 @@
 		};
 
 		nodes.update((nodes_p) => {
-			let goalNodeIdx = nodes_p.findIndex((node) => node.id === $selectedNodeId);
-			nodes_p[goalNodeIdx].data.fields = [...nodes_p[goalNodeIdx].data.fields, row];
+			const goalNodeIdx = nodes_p.findIndex((node) => node.id === $selectedNodeId);
+			if (goalNodeIdx === -1) return nodes_p;
 
-			return nodes_p;
+			return nodes_p.map((node, idx) => {
+				if (idx === goalNodeIdx) {
+					return {
+						...node,
+						data: {
+							...node.data,
+							fields: [...node.data.fields, row]
+						}
+					};
+				}
+				return node;
+			});
 		});
 	}
 
@@ -55,7 +63,7 @@
 		if (selectedNode && selectedNode.id) {
 			nodes.update((nodes) => nodes.filter((node) => node.id !== selectedNode!.id));
 			selectedNode = undefined;
-			$selectedNodeId = undefined;
+			setSelectedNodeId(undefined);
 		}
 	}
 
@@ -65,7 +73,14 @@
 			if (event instanceof KeyboardEvent && event.key === 'Enter') {
 				isEditingName = false;
 			}
-			selectedNode.data.name = input.value;
+			const nodeId = selectedNode.id;
+			nodes.update((nodes) => 
+				nodes.map((node) => 
+					node.id === nodeId 
+						? { ...node, data: { ...node.data, name: input.value } }
+						: node
+				)
+			);
 		}
 	}
 
@@ -74,33 +89,22 @@
 			selectedNode = $nodes.find((n) => n.id === $selectedNodeId);
 		}
 	});
-
-	$effect(() => {
-		if (selectedNode && selectedNode.id) {
-			nodes.update((nodes) => {
-				const index = nodes.findIndex((n) => n.id === selectedNode!.id);
-				if (index !== -1) {
-					nodes[index] = selectedNode as TableNodeType;
-				}
-				return nodes;
-			});
-		}
-	});
 </script>
 
-<div class="flex h-full flex-col rounded-lg bg-neutral-100 p-4">
+<div class="bg-secondary flex h-full flex-col rounded-lg p-4">
 	<div>
-		<Button onclick={handleAddTableNode} class="w-full space-x-2 transition" color="light">
+		<Button onclick={handleAddTableNode} class="w-full space-x-2 transition">
 			<span> Добавить таблицу </span>
 			<PlusOutline class="size-4 " />
 		</Button>
-		<hr class="my-2 text-neutral-300" />
+		<hr class="my-2 text-neutral-300 dark:text-neutral-700" />
 	</div>
 	{#if selectedNode}
 		<div>
 			<div class="flex items-center justify-between py-2">
 				{#if isEditingName}
 					<Input
+						autofocus
 						type="text"
 						value={selectedNode.data.name}
 						onblur={() => (isEditingName = false)}
@@ -124,7 +128,7 @@
 					<Dropdown simple class="w-36 px-2">
 						<DropdownItem
 							class="w-full cursor-pointer justify-start rounded-md text-start"
-							onclick={handleDeleteTable}>Delete</DropdownItem
+							onclick={handleDeleteTable}>Удалить</DropdownItem
 						>
 					</Dropdown>
 				</div>

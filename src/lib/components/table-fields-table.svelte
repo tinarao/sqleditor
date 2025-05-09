@@ -14,6 +14,7 @@
 	import { ALL_BASE_FIELD_TYPES_SELECT } from '$lib/constants';
 	import { slide } from 'svelte/transition';
 	import type { FieldType, TableNodeType } from '$lib/types';
+	import { currentNodesStore } from '$lib/store/currentProject';
 
 	let { selectedNode }: { selectedNode: TableNodeType } = $props();
 	let openRow: number | null | undefined = $state();
@@ -22,6 +23,24 @@
 	function toggleRow(i: number) {
 		selectedRowIdx = i;
 		openRow = openRow === i ? null : i;
+	}
+
+	function updateField(fieldIndex: number, updates: Partial<TableNodeType['data']['fields'][0]>) {
+		currentNodesStore.update((nodes) =>
+			nodes.map((node) =>
+				node.id === selectedNode.id
+					? {
+							...node,
+							data: {
+								...node.data,
+								fields: node.data.fields.map((field, idx) =>
+									idx === fieldIndex ? { ...field, ...updates } : field
+								)
+							}
+						}
+					: node
+			)
+		);
 	}
 </script>
 
@@ -52,8 +71,7 @@
 									Выберите тип
 									<Select
 										onchange={(e) => {
-											selectedNode.data.fields[selectedRowIdx].type = e.currentTarget
-												.value as FieldType;
+											updateField(idx, { type: e.currentTarget.value as FieldType });
 										}}
 										class="mt-2"
 										items={ALL_BASE_FIELD_TYPES_SELECT}
@@ -61,7 +79,7 @@
 								</Label>
 								<Toggle
 									onchange={(e) => {
-										selectedNode.data.fields[selectedRowIdx].nullable = e.currentTarget.checked;
+										updateField(idx, { nullable: e.currentTarget.checked });
 									}}>Nullable</Toggle
 								>
 								<div>
@@ -70,7 +88,7 @@
 										type="text"
 										placeholder={field.name}
 										onchange={(e) => {
-											selectedNode.data.fields[selectedRowIdx].name = e.currentTarget.value;
+											updateField(idx, { name: e.currentTarget.value });
 										}}
 									/>
 								</div>
