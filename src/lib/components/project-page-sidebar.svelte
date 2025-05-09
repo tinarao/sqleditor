@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Dropdown, DropdownItem, Input } from 'flowbite-svelte';
+	import { Button, cn, Dropdown, DropdownItem, Input } from 'flowbite-svelte';
 	import { DotsHorizontalOutline, PlusOutline } from 'flowbite-svelte-icons';
 	import { nanoid } from 'nanoid';
 	import { selectedNodeId } from '$lib/store/selectedNode';
@@ -88,7 +88,7 @@
 	});
 </script>
 
-<aside class="flex flex-col rounded-lg bg-neutral-50 p-4">
+<div class="flex h-full flex-col rounded-lg bg-neutral-100 p-4">
 	<div>
 		<Button onclick={handleAddTableNode} class="w-full space-x-2 transition" color="light">
 			<span> Добавить таблицу </span>
@@ -139,4 +139,4 @@
 			</div>
 		</div>
 	{/if}
-</aside>
+</div>

@@ -32,8 +32,11 @@
 	});
 
 	$effect(() => {
-		if ($currentProjectStore) {
-			$currentProjectStore.tables = $currentNodesStore;
+		if (
+			$currentProjectStore &&
+			JSON.stringify($currentProjectStore.tables) !== JSON.stringify($currentNodesStore)
+		) {
+			$currentProjectStore.tables = structuredClone($currentNodesStore);
 		}
 	});
 </script>
