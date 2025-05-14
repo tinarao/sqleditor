@@ -1,7 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { projectsStore } from '$lib/store/projects';
-	import { Button, Input, Kbd } from 'flowbite-svelte';
+	import { Button, Input } from 'flowbite-svelte';
 	import {
 		ArrowLeftOutline,
 		CogSolid,
@@ -90,11 +90,27 @@
 			>
 				<FloppyDiskAltOutline />
 			</Button>
+			{#if $page.url.pathname.endsWith('/export')}
+				<Button
+					href={'/app/' + data.uuid}
+					class="h-12 gap-x-2 border-neutral-300 text-neutral-900 transition"
+					outline
+				>
+					<ArrowLeftOutline />
+				</Button>
+			{:else}
+				<Button
+					href={'/app/' + data.uuid + '/export'}
+					class="h-12 gap-x-2 border-neutral-300 text-neutral-900 transition"
+					outline
+				>
+					Экспорт
+				</Button>
+			{/if}
 			{#if $page.url.pathname.endsWith('/settings')}
 				<Button
 					href={'/app/' + data.uuid}
-					size="sm"
-					class="bg-primary size-12 text-neutral-900 transition"
+					class="size-12 gap-x-2 border-neutral-300 text-neutral-900 transition"
 					outline
 				>
 					<ArrowLeftOutline />
@@ -103,7 +119,7 @@
 				<Button
 					href={'/app/' + data.uuid + '/settings'}
 					size="sm"
-					class="h-12 w-12 border-neutral-300 text-neutral-900 transition"
+					class="size-12 gap-x-2 border-neutral-300 text-neutral-900 transition"
 					outline
 				>
 					<CogSolid />

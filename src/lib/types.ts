@@ -6,24 +6,25 @@ export type Project = {
 	createdAt: string;
 };
 
-export type Table = {
-	uuid: string;
-	name: string;
-	description: string;
-	fields: Field[];
-};
+// export type Table = {
+// 	uuid: string;
+// 	name: string;
+// 	description: string;
+// 	fields: Field[];
+// };
 
-export type Field = {
-	uuid: string;
-	name: string;
-	type: FieldType;
-};
+// export type Field = {
+// 	uuid: string;
+// 	name: string;
+// 	type: FieldType;
+// };
 
 export type TableNodeData = {
 	pk?: boolean;
 	type: FieldType;
 	name: string;
 	nullable?: boolean;
+	unique?: boolean;
 };
 
 export type TableNodeType = {

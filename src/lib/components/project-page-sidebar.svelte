@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button,  Dropdown, DropdownItem, Input } from 'flowbite-svelte';
+	import { Button, Dropdown, DropdownItem, Input } from 'flowbite-svelte';
 	import { DotsHorizontalOutline, PlusOutline } from 'flowbite-svelte-icons';
 	import { nanoid } from 'nanoid';
 	import { selectedNodeId, setSelectedNodeId } from '$lib/store/selectedNode';
@@ -74,11 +74,9 @@
 				isEditingName = false;
 			}
 			const nodeId = selectedNode.id;
-			nodes.update((nodes) => 
-				nodes.map((node) => 
-					node.id === nodeId 
-						? { ...node, data: { ...node.data, name: input.value } }
-						: node
+			nodes.update((nodes) =>
+				nodes.map((node) =>
+					node.id === nodeId ? { ...node, data: { ...node.data, name: input.value } } : node
 				)
 			);
 		}
@@ -106,15 +104,29 @@
 					<Input
 						autofocus
 						type="text"
+						pattern="[a-zA-Z]+"
+						title="Только латинские символы без пробелов"
 						value={selectedNode.data.name}
 						onblur={() => (isEditingName = false)}
-						onkeydown={handleNameChange}
+						onkeydown={(e) => {
+							if (e.key === 'Enter') {
+								handleNameChange(e);
+								isEditingName = false;
+								return;
+							}
+							if (
+								!/^[a-zA-Z]$/.test(e.key) &&
+								!['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
+							) {
+								e.preventDefault();
+							}
+						}}
 						onchange={handleNameChange}
 						class="text-xl font-medium"
 					/>
 				{:else}
 					<button
-						title="Нажмите, чтобы изменить название"
+						title="Нажмите, чтобы изменить название таблицы"
 						class="cursor-pointer text-start text-xl font-medium"
 						onclick={() => (isEditingName = true)}
 					>

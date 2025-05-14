@@ -32,7 +32,7 @@
 		debouncedSearchQuery
 			? $currentNodesStore.filter((table) =>
 					table.data.name.toLowerCase().includes(debouncedSearchQuery)
-			  )
+				)
 			: $currentNodesStore
 	);
 
@@ -46,7 +46,7 @@
 </script>
 
 <div class="grid flex-1 grid-cols-12 gap-x-4 p-4 py-0">
-	<aside class="bg-secondary col-span-2 p-4">
+	<aside class="bg-secondary col-span-2 rounded-lg p-4">
 		{#if $currentProjectStore}
 			<search>
 				<Input
@@ -70,7 +70,13 @@
 		{/if}
 	</aside>
 	<div class="col-span-7">
-		<SvelteFlow {nodeTypes} fitView nodes={currentNodesStore} edges={currentEdgesStore}>
+		<SvelteFlow
+			class="rounded-lg"
+			{nodeTypes}
+			fitView
+			nodes={currentNodesStore}
+			edges={currentEdgesStore}
+		>
 			<Background size={0} bgColor={flowBackgroundColor} />
 		</SvelteFlow>
 	</div>
